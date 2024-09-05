@@ -14,7 +14,7 @@ public class EmployeeRepository {
   // TODO: remove this, use postgres DB
   private List<Employee> employees = new ArrayList<>();
 
-  public List<Employee> getAll() {
+  public List<Employee> get() {
     return this.employees;
   }
 
