@@ -11,6 +11,7 @@ import com.booleanuk.api.model.EmployeeDTO;
 
 public class EmployeeRepository {
   private int idCounter = 1;
+  // TODO: remove this, use postgres DB
   private List<Employee> employees = new ArrayList<>();
 
   public List<Employee> getAll() {
@@ -29,5 +30,21 @@ public class EmployeeRepository {
         employeeDTO.salaryGrade(), employeeDTO.department());
     this.employees.add(employee);
     return employee;
+  }
+
+  public Employee update(int id, EmployeeDTO employeeDTO) throws ResponseStatusException {
+    Employee oldEmployee = this.get(id);
+    Employee newEmployee = new Employee(oldEmployee.id(), employeeDTO.name(), employeeDTO.jobName(),
+        employeeDTO.salaryGrade(), employeeDTO.department());
+    this.employees.set(this.employees.indexOf(oldEmployee), newEmployee);
+
+    return newEmployee;
+  }
+
+  public Employee delete(int id) {
+    Employee toRemove = this.get(id);
+    this.employees.remove(toRemove);
+
+    return toRemove;
   }
 }
