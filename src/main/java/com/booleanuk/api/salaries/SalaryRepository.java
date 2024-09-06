@@ -10,7 +10,9 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-public class SalaryRepository {
+import com.booleanuk.api.base.Repository;
+
+public class SalaryRepository implements Repository<Salary, Salary> {
   private final Connection connection;
 
   public SalaryRepository(Connection connection) {
@@ -44,11 +46,11 @@ public class SalaryRepository {
     return null;
   }
 
-  public Salary create(Salary salary) throws ResponseStatusException {
+  public Salary post(Salary salary) throws ResponseStatusException {
     return null;
   }
 
-  public Salary update(int id, Salary salary) throws ResponseStatusException {
+  public Salary put(int id, Salary salary) throws ResponseStatusException {
     return null;
   }
 
