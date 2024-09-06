@@ -114,13 +114,12 @@ public class EmployeeRepository implements Repository<Employee, EmployeeDTO> {
 
       ResultSet resultSet = deletion.getGeneratedKeys();
       resultSet.next();
-      int deletedId = resultSet.getInt("id");
       String deletedName = resultSet.getString("name");
       String deletedJobName = resultSet.getString("job_name");
       String deletedSalaryGrade = resultSet.getString("salary_grade");
       String deletedDepartment = resultSet.getString("department");
 
-      return new Employee(deletedId, deletedName, deletedJobName, deletedSalaryGrade, deletedDepartment);
+      return new Employee(id, deletedName, deletedJobName, deletedSalaryGrade, deletedDepartment);
     } catch (SQLException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
