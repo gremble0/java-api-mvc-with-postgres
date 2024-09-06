@@ -47,7 +47,11 @@ public class EmployeeRepository {
     try {
       PreparedStatement selection = this.connection.prepareStatement("SELECT * FROM employees WHERE id = ?");
       selection.setInt(1, id);
-      return EmployeeRepository.sqlResultToEmployees(selection.executeQuery()).getFirst();
+      List<Employee> employees = sqlResultToEmployees(selection.executeQuery());
+      if (employees.isEmpty())
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      else
+        return employees.getFirst();
     } catch (SQLException e) {
       throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
     }
@@ -72,7 +76,7 @@ public class EmployeeRepository {
       return new Employee(createdId, employeeDTO.name(), employeeDTO.jobName(), employeeDTO.salaryGrade(),
           employeeDTO.department());
     } catch (SQLException e) {
-      throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -86,12 +90,14 @@ public class EmployeeRepository {
       update.setString(3, employeeDTO.salaryGrade());
       update.setString(4, employeeDTO.department());
       update.setInt(5, id);
-      update.executeUpdate();
+      int updatedRows = update.executeUpdate();
+      if (updatedRows == 0)
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
       return new Employee(id, employeeDTO.name(), employeeDTO.jobName(), employeeDTO.salaryGrade(),
           employeeDTO.department());
     } catch (SQLException e) {
-      throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -100,7 +106,9 @@ public class EmployeeRepository {
       PreparedStatement deletion = this.connection.prepareStatement("DELETE FROM employees WHERE id = ?",
           Statement.RETURN_GENERATED_KEYS);
       deletion.setInt(1, id);
-      deletion.executeUpdate();
+      int updatedRows = deletion.executeUpdate();
+      if (updatedRows == 0)
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
       ResultSet resultSet = deletion.getGeneratedKeys();
       resultSet.next();
@@ -112,7 +120,7 @@ public class EmployeeRepository {
 
       return new Employee(deletedId, deletedName, deletedJobName, deletedSalaryGrade, deletedDepartment);
     } catch (SQLException e) {
-      throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
   }
 }
