@@ -25,6 +25,7 @@ abstract public class DatabaseConnector {
       String dbUrl = properties.getProperty("db.url");
       String dbPassword = properties.getProperty("db.password");
 
+      inputStream.close();
       return new DatabaseConfig(dbUser, dbUrl, dbPassword);
     } catch (IOException e) {
       throw new SQLException();

@@ -1,4 +1,9 @@
 package com.booleanuk.api.salaries;
 
-public record Salary(String grade, int minSalary, int maxSalary) {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record Salary(
+    @JsonProperty(required = true) String grade,
+    @JsonProperty(required = true) int minSalary,
+    @JsonProperty(required = true) int maxSalary) {
 }
