@@ -21,15 +21,12 @@ public class EmployeeController {
   private final EmployeeRepository repository;
 
   public EmployeeController() throws SQLException {
-    System.out.println("before");
     this.repository = new EmployeeRepository(DatabaseConnector.getConnection());
-    System.out.println("after");
   }
 
   @GetMapping
   public ResponseEntity<List<Employee>> get() {
-    // this.repository.get()
-    return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+    return new ResponseEntity<>(this.repository.get(), HttpStatus.OK);
   }
 
   @GetMapping(value = "/{id}")

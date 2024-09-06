@@ -20,12 +20,12 @@ public class EmployeeRepository {
   private static List<Employee> sqlResultToEmployees(ResultSet result) throws SQLException {
     List<Employee> employees = new ArrayList<>();
     while (result.next()) {
-      int id = result.getInt("id");
-      String name = result.getString("name");
-      String jobName = result.getString("jobName");
-      String salaryGrade = result.getString("salaryGrade");
-      String department = result.getString("department");
-      employees.add(new Employee(id, name, jobName, salaryGrade, department));
+      employees.add(new Employee(
+          result.getInt("id"),
+          result.getString("name"),
+          result.getString("jobName"),
+          result.getString("salaryGrade"),
+          result.getString("department")));
     }
 
     return employees;
@@ -55,6 +55,7 @@ public class EmployeeRepository {
       statement.setString(4, employeeDTO.department());
       statement.executeQuery();
 
+      // TODO:
       return null;
     } catch (SQLException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
