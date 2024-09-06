@@ -1,4 +1,4 @@
-package com.booleanuk.api.model;
+package com.booleanuk.api.employees;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,17 +24,16 @@ abstract public class DatabaseConnector {
       String dbUser = properties.getProperty("db.user");
       String dbUrl = properties.getProperty("db.url");
       String dbPassword = properties.getProperty("db.password");
-      String dbDatabase = properties.getProperty("db.database");
 
-      return new DatabaseConfig(dbUser, dbUrl, dbPassword, dbDatabase);
+      return new DatabaseConfig(dbUser, dbUrl, dbPassword);
     } catch (IOException e) {
       throw new SQLException();
     }
   }
 
   private static Connection connectToDatabase(DatabaseConfig config) throws SQLException {
-    final String url = String.format("jdbc:postgresql://%s:5432/%s?user=%s&password=%s", config.dbUrl(),
-        config.dbDatabase(), config.dbUser(), config.dbPassword());
+    final String url = String.format("%s?user=%s&password=%s", config.dbUrl(),
+        config.dbUser(), config.dbPassword());
 
     final PGSimpleDataSource dataSource = new PGSimpleDataSource();
     dataSource.setURL(url);

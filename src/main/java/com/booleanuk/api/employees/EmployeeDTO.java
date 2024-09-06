@@ -1,4 +1,4 @@
-package com.booleanuk.api.model;
+package com.booleanuk.api.employees;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

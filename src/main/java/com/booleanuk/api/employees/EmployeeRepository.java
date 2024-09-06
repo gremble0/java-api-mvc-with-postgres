@@ -1,4 +1,4 @@
-package com.booleanuk.api.repository;
+package com.booleanuk.api.employees;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,9 +9,6 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-
-import com.booleanuk.api.model.Employee;
-import com.booleanuk.api.model.EmployeeDTO;
 
 public class EmployeeRepository {
   private Connection connection;

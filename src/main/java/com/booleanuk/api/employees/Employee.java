@@ -1,4 +1,4 @@
-package com.booleanuk.api.model;
+package com.booleanuk.api.employees;
 
 public record Employee(
     int id,
