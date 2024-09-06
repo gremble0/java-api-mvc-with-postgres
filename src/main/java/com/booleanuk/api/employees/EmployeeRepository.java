@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +24,8 @@ public class EmployeeRepository {
       employees.add(new Employee(
           result.getInt("id"),
           result.getString("name"),
-          result.getString("jobName"),
-          result.getString("salaryGrade"),
+          result.getString("job_name"),
+          result.getString("salary_grade"),
           result.getString("department")));
     }
 
@@ -33,10 +34,10 @@ public class EmployeeRepository {
 
   public List<Employee> get() throws ResponseStatusException {
     try {
-      PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM employees");
+      PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM employees;");
       return EmployeeRepository.sqlResultToEmployees(statement.executeQuery());
     } catch (SQLException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
     }
   }
 
@@ -46,19 +47,24 @@ public class EmployeeRepository {
 
   public Employee create(EmployeeDTO employeeDTO) throws ResponseStatusException {
     try {
-      PreparedStatement statement = this.connection
+      PreparedStatement insertion = this.connection
           .prepareStatement(
-              "INSERT INTO employees(name, job_name, salary_grade, department) VALUES('?', '?', '?', '?')");
-      statement.setString(1, employeeDTO.name());
-      statement.setString(2, employeeDTO.jobName());
-      statement.setString(3, employeeDTO.salaryGrade());
-      statement.setString(4, employeeDTO.department());
-      statement.executeQuery();
+              "INSERT INTO employees(name, job_name, salary_grade, department) VALUES(?, ?, ?, ?);",
+              Statement.RETURN_GENERATED_KEYS);
+      insertion.setString(1, employeeDTO.name());
+      insertion.setString(2, employeeDTO.jobName());
+      insertion.setString(3, employeeDTO.salaryGrade());
+      insertion.setString(4, employeeDTO.department());
+      insertion.executeUpdate();
 
-      // TODO:
-      return null;
+      ResultSet resultSet = insertion.getGeneratedKeys();
+      resultSet.next();
+      int createdId = resultSet.getInt(1);
+
+      return new Employee(createdId, employeeDTO.name(), employeeDTO.jobName(), employeeDTO.salaryGrade(),
+          employeeDTO.department());
     } catch (SQLException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
     }
   }
 
