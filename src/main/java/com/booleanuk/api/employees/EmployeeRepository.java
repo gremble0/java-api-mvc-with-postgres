@@ -29,7 +29,9 @@ public class EmployeeRepository {
           result.getString("department")));
     }
 
-    return employees;
+    return employees.stream()
+        .sorted((employee1, employee2) -> employee1.id() - employee2.id())
+        .toList();
   }
 
   public List<Employee> get() throws ResponseStatusException {
@@ -65,7 +67,7 @@ public class EmployeeRepository {
 
       ResultSet resultSet = insertion.getGeneratedKeys();
       resultSet.next();
-      int createdId = resultSet.getInt(1);
+      int createdId = resultSet.getInt("id");
 
       return new Employee(createdId, employeeDTO.name(), employeeDTO.jobName(), employeeDTO.salaryGrade(),
           employeeDTO.department());
@@ -75,10 +77,42 @@ public class EmployeeRepository {
   }
 
   public Employee update(int id, EmployeeDTO employeeDTO) throws ResponseStatusException {
-    return null;
+    try {
+      PreparedStatement update = this.connection
+          .prepareStatement(
+              "UPDATE employees SET name = ?, job_name = ?, salary_grade = ?, department = ? WHERE id = ?");
+      update.setString(1, employeeDTO.name());
+      update.setString(2, employeeDTO.jobName());
+      update.setString(3, employeeDTO.salaryGrade());
+      update.setString(4, employeeDTO.department());
+      update.setInt(5, id);
+      update.executeUpdate();
+
+      return new Employee(id, employeeDTO.name(), employeeDTO.jobName(), employeeDTO.salaryGrade(),
+          employeeDTO.department());
+    } catch (SQLException e) {
+      throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
+    }
   }
 
   public Employee delete(int id) throws ResponseStatusException {
-    return null;
+    try {
+      PreparedStatement deletion = this.connection.prepareStatement("DELETE FROM employees WHERE id = ?",
+          Statement.RETURN_GENERATED_KEYS);
+      deletion.setInt(1, id);
+      deletion.executeUpdate();
+
+      ResultSet resultSet = deletion.getGeneratedKeys();
+      resultSet.next();
+      int deletedId = resultSet.getInt("id");
+      String deletedName = resultSet.getString("name");
+      String deletedJobName = resultSet.getString("job_name");
+      String deletedSalaryGrade = resultSet.getString("salary_grade");
+      String deletedDepartment = resultSet.getString("department");
+
+      return new Employee(deletedId, deletedName, deletedJobName, deletedSalaryGrade, deletedDepartment);
+    } catch (SQLException e) {
+      throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
+    }
   }
 }
