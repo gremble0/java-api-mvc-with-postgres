@@ -11,8 +11,10 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-public class EmployeeRepository {
-  private Connection connection;
+import com.booleanuk.api.base.Repository;
+
+public class EmployeeRepository implements Repository<Employee, EmployeeDTO> {
+  private final Connection connection;
 
   public EmployeeRepository(Connection connection) {
     this.connection = connection;
@@ -57,7 +59,7 @@ public class EmployeeRepository {
     }
   }
 
-  public Employee create(EmployeeDTO employeeDTO) throws ResponseStatusException {
+  public Employee post(EmployeeDTO employeeDTO) throws ResponseStatusException {
     try {
       PreparedStatement insertion = this.connection
           .prepareStatement(
@@ -80,7 +82,7 @@ public class EmployeeRepository {
     }
   }
 
-  public Employee update(int id, EmployeeDTO employeeDTO) throws ResponseStatusException {
+  public Employee put(int id, EmployeeDTO employeeDTO) throws ResponseStatusException {
     try {
       PreparedStatement update = this.connection
           .prepareStatement(

@@ -1,4 +1,4 @@
-package com.booleanuk.api.employees;
+package com.booleanuk.api.database;
 
 public record DatabaseConfig(
     String dbUser,
