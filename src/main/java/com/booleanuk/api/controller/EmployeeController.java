@@ -1,5 +1,6 @@
 package com.booleanuk.api.controller;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -13,14 +14,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.booleanuk.api.model.DatabaseConnector;
 import com.booleanuk.api.model.Employee;
 import com.booleanuk.api.model.EmployeeDTO;
 import com.booleanuk.api.repository.EmployeeRepository;
 
 @RestController
-@RequestMapping("/employees")
+@RequestMapping(value = "/employees")
 public class EmployeeController {
-  private EmployeeRepository repository = new EmployeeRepository();
+  private final EmployeeRepository repository;
+
+  public EmployeeController() throws SQLException {
+    this.repository = new EmployeeRepository(DatabaseConnector.getConnection());
+  }
 
   @GetMapping
   public ResponseEntity<List<Employee>> get() {

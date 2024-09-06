@@ -5,18 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Properties;
 
 import org.postgresql.ds.PGSimpleDataSource;
 
-abstract public class DatabaseConnection {
+abstract public class DatabaseConnector {
   public static Connection getConnection() throws SQLException {
-    DatabaseConfig config = DatabaseConnection.readConfig();
-    return DatabaseConnection.connectToDatabase(config);
+    DatabaseConfig config = DatabaseConnector.readConfig();
+    return DatabaseConnector.connectToDatabase(config);
   }
 
-  private static DatabaseConfig readConfig() {
+  private static DatabaseConfig readConfig() throws SQLException {
     try {
       InputStream inputStream = new FileInputStream("src/main/resources/config.properties");
       Properties properties = new Properties();
@@ -29,8 +28,7 @@ abstract public class DatabaseConnection {
 
       return new DatabaseConfig(dbUser, dbUrl, dbPassword, dbDatabase);
     } catch (IOException e) {
-      // TODO: improve this
-      return null;
+      throw new SQLException();
     }
   }
 
@@ -42,9 +40,5 @@ abstract public class DatabaseConnection {
     dataSource.setURL(url);
 
     return dataSource.getConnection();
-  }
-
-  public List<Employee> get() {
-    return null;
   }
 }
