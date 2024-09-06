@@ -34,15 +34,21 @@ public class EmployeeRepository {
 
   public List<Employee> get() throws ResponseStatusException {
     try {
-      PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM employees;");
-      return EmployeeRepository.sqlResultToEmployees(statement.executeQuery());
+      PreparedStatement selection = this.connection.prepareStatement("SELECT * FROM employees;");
+      return EmployeeRepository.sqlResultToEmployees(selection.executeQuery());
     } catch (SQLException e) {
       throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
     }
   }
 
   public Employee get(int id) throws ResponseStatusException {
-    return null;
+    try {
+      PreparedStatement selection = this.connection.prepareStatement("SELECT * FROM employees WHERE id = ?");
+      selection.setInt(1, id);
+      return EmployeeRepository.sqlResultToEmployees(selection.executeQuery()).getFirst();
+    } catch (SQLException e) {
+      throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
+    }
   }
 
   public Employee create(EmployeeDTO employeeDTO) throws ResponseStatusException {
